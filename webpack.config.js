@@ -35,6 +35,14 @@ module.exports = (env, argv) => {
         },
       ],
     },
+    stats: {
+      cached: false,
+      cachedAssets: false,
+      chunks: false,
+      chunkModules: false,
+      chunkOrigins: false,
+      modules: false,
+    },
     resolve: {
       extensions: [".tsx", ".ts", ".js", ".jsx"],
     },
@@ -49,6 +57,9 @@ module.exports = (env, argv) => {
       compress: true,
       port: 3000,
       hot: true,
+      stats: {
+        modules: false,
+      },
     },
     plugins: [
       // ...
