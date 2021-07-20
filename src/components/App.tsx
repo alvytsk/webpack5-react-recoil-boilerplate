@@ -7,7 +7,7 @@ const App = () => {
     <div className="app">
       Welcome to Webpack5 React Recoil Boilerplate!
       <p />
-      <img src="assets/react-redux.png" height={200} />
+      <img src="assets/recoil.png" height={200} />
       <p />
       <Counter />
     </div>
