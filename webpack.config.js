@@ -1,5 +1,6 @@
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 var path = require("path");
@@ -9,8 +10,9 @@ module.exports = (env, argv) => {
   return {
     entry: ["./src/index.tsx"],
     output: {
-      filename: "[name].[fullhash].js",
+      filename: "static/js/[name].[contenthash:8].js",
       path: path.resolve(__dirname, "build"),
+      chunkFilename: "static/js/[name].[contenthash:8].chunk.js",
     },
     module: {
       rules: [
@@ -27,7 +29,11 @@ module.exports = (env, argv) => {
         },
         {
           test: /\.(css|less)$/i,
-          use: ["style-loader", "css-loader", "less-loader"],
+          use: [MiniCssExtractPlugin.loader, "css-loader", "less-loader"],
+        },
+        {
+          test: /\.woff($|\?)|\.woff2($|\?)|\.ttf($|\?)|\.eot($|\?)|\.svg($|\?)/,
+          use: "url-loader",
         },
         {
           test: /\.(png|jpe?g|gif|svg|eot|ttf|woff|woff2)$/i,
@@ -65,6 +71,10 @@ module.exports = (env, argv) => {
       // ...
       new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({ template: "./public/index.html" }),
+      new MiniCssExtractPlugin({
+        filename: "static/css/[name].[contenthash:8].css",
+        chunkFilename: "static/css/[name].[contenthash:8].chunk.css",
+      }),
       new CopyWebpackPlugin({
         patterns: [
           {

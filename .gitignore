@@ -4,3 +4,6 @@ node_modules
 # Build directories
 dist
 build
+
+#yarn
+yarn-error.log
