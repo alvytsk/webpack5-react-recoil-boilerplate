@@ -6,7 +6,7 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 var path = require("path");
 
 module.exports = (env, argv) => {
-  console.log(env);
+  // console.log(env);
   return {
     entry: ["./src/index.tsx"],
     output: {
@@ -68,7 +68,6 @@ module.exports = (env, argv) => {
       },
     },
     plugins: [
-      // ...
       new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({ template: "./public/index.html" }),
       new MiniCssExtractPlugin({
@@ -80,6 +79,7 @@ module.exports = (env, argv) => {
           {
             from: "src/assets",
             to: "assets",
+            noErrorOnMissing: true,
           },
         ],
       }),
