@@ -57,14 +57,18 @@ module.exports = (env, argv) => {
       minimize: true,
     },
     devServer: {
-      contentBase: path.resolve(__dirname, "build"),
+      static: {
+        directory: path.resolve(__dirname, "build"),
+      },
       open: env.BROWSER === "none" ? false : true,
       historyApiFallback: true,
       compress: true,
       port: 3000,
       hot: true,
-      stats: {
-        modules: false,
+      devMiddleware: {
+        stats: {
+          modules: false,
+        },
       },
     },
     plugins: [
