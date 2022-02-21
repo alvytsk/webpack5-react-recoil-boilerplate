@@ -7,3 +7,5 @@ build
 
 #yarn
 yarn-error.log
+
+.DS_Store

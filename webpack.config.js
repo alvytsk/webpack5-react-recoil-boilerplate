@@ -2,11 +2,19 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-
+const TerserPlugin = require("terser-webpack-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
+const Dotenv = require("dotenv-webpack");
+const webpack = require("webpack");
 var path = require("path");
 
 module.exports = (env, argv) => {
-  // console.log(env);
+  const envKeys = Object.keys(env).reduce((prev, next) => {
+    prev[`process.env.${next}`] = JSON.stringify(env[next]);
+    return prev;
+  }, {});
+
   return {
     entry: ["./src/index.tsx"],
     output: {
@@ -51,10 +59,37 @@ module.exports = (env, argv) => {
     },
     resolve: {
       extensions: [".tsx", ".ts", ".js", ".jsx"],
+      alias: {
+        "~": path.resolve(__dirname, "src/"),
+      },
     },
     optimization: {
-      splitChunks: { chunks: "all" },
       minimize: true,
+      runtimeChunk: {
+        name: (entrypoint) => `runtime-${entrypoint.name}`,
+      },
+      splitChunks: {
+        cacheGroups: {
+          vendor: {
+            name: "node_vendors",
+            test: /[\\/]node_modules[\\/]/,
+            chunks: "all",
+          },
+        },
+      },
+      minimizer: [
+        new TerserPlugin({
+          terserOptions: {
+            format: {
+              comments: false,
+            },
+          },
+          extractComments: false,
+          // enable parallel running
+          parallel: true,
+        }),
+        new CssMinimizerPlugin(),
+      ],
     },
     devServer: {
       static: {
@@ -73,7 +108,19 @@ module.exports = (env, argv) => {
     },
     plugins: [
       new CleanWebpackPlugin(),
-      new HtmlWebpackPlugin({ template: "./public/index.html" }),
+      new HtmlWebpackPlugin({
+        template: "./public/index.html",
+        filename: "./index.html",
+        favicon: "./public/favicon.ico",
+        minify: {
+          collapseWhitespace: true,
+          removeComments: true,
+          removeRedundantAttributes: true,
+          removeScriptTypeAttributes: true,
+          removeStyleLinkTypeAttributes: true,
+          useShortDoctype: true,
+        },
+      }),
       new MiniCssExtractPlugin({
         filename: "static/css/[name].[contenthash:8].css",
         chunkFilename: "static/css/[name].[contenthash:8].chunk.css",
@@ -87,6 +134,9 @@ module.exports = (env, argv) => {
           },
         ],
       }),
+      new Dotenv(),
+      new webpack.DefinePlugin(envKeys),
+      new WebpackManifestPlugin(),
     ],
   };
 };

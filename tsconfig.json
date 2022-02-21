@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES5",
+    "target": "ES6",
     "lib": ["dom", "dom.iterable"],
     "allowJs": true,
     "checkJs": true,
@@ -15,8 +15,14 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": false,
-    "jsx": "react-jsx"
+    "noImplicitAny": false,
+    "jsx": "react-jsx",
+    "baseUrl": "src", // all paths are relative to the baseUrl
+    "paths": {
+      "~/*": ["*"] // resolve any `~/foo/bar` to `<baseUrl>/foo/bar`
+    },
+    "outDir": "./build"
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "test", "release"]
+  "include": ["src", "src/custom.d.ts"],
+  "exclude": ["node_modules", "test", "build"]
 }
